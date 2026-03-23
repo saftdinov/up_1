@@ -1,15 +1,16 @@
 <?php
 
 namespace Controller;
-
+use Src\Request;
+use Model\Post;
 use Src\View;
 
 class Site
 {
-    public function index(): string
+    public function index(Request $request): string
     {
-        $view = new View();
-        return $view->render('site.hello', ['message' => 'index working']);
+        $posts = Post::where('id', $request->all()['id'] ?? 0)->get();
+        return (new View())->render('site.post', ['posts' => $posts]);
     }
 
     public function hello(): string

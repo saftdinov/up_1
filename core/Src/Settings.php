@@ -6,6 +6,10 @@ use Error;
 
 class Settings
 {
+    public function getDbSetting(): array
+    {
+        return $this->db ?? [];
+    }
     private array $_settings;
 
     public function __construct(array $settings = [])
@@ -20,6 +24,7 @@ class Settings
         }
         throw new Error('Accessing a non-existent property');
     }
+
 
     public function getRootPath(): string
     {

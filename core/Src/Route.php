@@ -6,6 +6,7 @@ use Error;
 
 class Route
 {
+
     private static array $routes = [];
     private static string $prefix = '';
 
@@ -25,6 +26,8 @@ class Route
     {
         $path = explode('?', $_SERVER['REQUEST_URI'])[0];
         $path = substr($path, strlen(self::$prefix) + 1);
+        $path = trim($path, '/');
+
 
         if (!array_key_exists($path, self::$routes)) {
             throw new Error('This path does not exist');
@@ -42,6 +45,6 @@ class Route
         }
 
 
-        call_user_func([new $class, $action]);
+        call_user_func([new $class, $action], new Request());
     }
 }
