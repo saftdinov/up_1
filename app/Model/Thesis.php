@@ -6,14 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thesis extends Model
 {
-    protected $table = 'Thesis';
-    protected $primaryKey = 'id';
-    public $incrementing = false;
+    public $timestamps = false;
+    protected $table = 'thesis';
+    protected $primaryKey = 'Dissertation_ID';
+
     protected $fillable = [
-        'Dissertation_ID',
-        'Defense_date',
         'Topic',
-        'Status',
+        'Defense_date',
         'Graduate student_ID',
+        'Status'
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(GraduateStudent::class, 'Graduate student_ID', 'Graduate student_ID');
+    }
 }

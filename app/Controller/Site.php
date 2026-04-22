@@ -1,50 +1,85 @@
 <?php
 
 namespace Controller;
-use Src\Request;
+
+use Model\GraduateStudent;
+use Model\Publication;
+use Model\Thesis;
+use Model\ScientificSupervisor;
 use Model\User;
-use Model\Post;
-use Src\View;
 use Src\Auth\Auth;
+use Src\Request;
+use Src\View;
 
 class Site
 {
+    public function hello(): string
+    {
+        $countStudents = GraduateStudent::count();
+        $countPublications = Publication::count();
+        $countDefenses = Thesis::where('Status', 'defended')->count();
+        $countSupervisors = ScientificSupervisor::count();
+
+        $data = [
+            'countStudents'    => $countStudents,
+            'countPublications'=> $countPublications,
+            'countDefenses'    => $countDefenses,
+            'countSupervisors' => $countSupervisors
+        ];
+
+        return (new View('site.hello', $data))->render();
+    }
 
     public function login(Request $request): string
     {
-        //Если просто обращение к странице, то отобразить форму
-        if ($request->method === 'GET') {
-            return new View('site.login');
-        }
-        //Если удалось аутентифицировать пользователя, то редирект
-        if (Auth::attempt($request->all())) {
+        if (\Src\Auth\Auth::check()) {
             app()->route->redirect('/hello');
         }
-        //Если аутентификация не удалась, то сообщение об ошибке
-        return new View('site.login', ['message' => 'Неправильные логин или пароль']);
+
+        $message = '';
+
+        if ($request->method === 'POST') {
+            $login = $request->login ?? '';
+            $password = $request->password ?? '';
+
+            if (\Src\Auth\Auth::attempt(['login' => $login, 'password' => $password])) {
+                app()->route->redirect('/hello');
+                exit;
+            } else {
+                $message = 'Неверный логин или пароль';
+            }
+        }
+
+        // ✅ ИСПОЛЬЗУЕМ echo + exit вместо return
+        echo (new View('site.login', ['message' => $message]))->withoutLayout()->render();
+        exit;
+    }
+
+    public function signup(Request $request): string
+    {
+        if (\Src\Auth\Auth::check()) {
+            app()->route->redirect('/hello');
+        }
+
+        if ($request->method === 'POST') {
+            \Model\User::create([
+                'name' => $request->name,
+                'login' => $request->login,
+                'password' => $request->password
+            ]);
+
+            app()->route->redirect('/login');
+            exit;
+        }
+
+        // ✅ ИСПОЛЬЗУЕМ echo + exit вместо return
+        echo (new View('site.signup'))->withoutLayout()->render();
+        exit;
     }
 
     public function logout(): void
     {
         Auth::logout();
-        app()->route->redirect('/hello');
-    }
-    public function signup(Request $request): string
-    {
-        if ($request->method === 'POST' && User::create($request->all())) {
-            app()->route->redirect('login');
-        }
-        return new View('site.signup');
-    }
-    public function index(Request $request): string
-    {
-        $posts = Post::where('id', $request->all()['id'] ?? 0)->get();
-        return (new View())->render('site.post', ['posts' => $posts]);
-    }
-
-    public function hello(): string
-    {
-        return new View('site.hello', ['message' => 'hello working']);
+        app()->route->redirect('/login');
     }
 }
-///

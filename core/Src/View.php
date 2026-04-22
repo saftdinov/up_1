@@ -10,6 +10,7 @@ class View
     private array $data = [];
     private string $root = '';
     private string $layout = '/layouts/main.php';
+    private bool $useLayout = true;  // ✅ Добавляем это свойство
 
     public function __construct(string $view = '', array $data = [])
     {
@@ -18,23 +19,24 @@ class View
         $this->data = $data;
     }
 
-    //Полный путь до директории с представлениями
-    private function getRoot(): string
+    // ✅ Метод для отключения layout
+    public function withoutLayout(): self
     {
-        global $app;
-        $root = $app->settings->getRootPath();
-        $path = $app->settings->getViewsPath();
-
-        return $_SERVER['DOCUMENT_ROOT'] . $root . $path;
+        $this->useLayout = false;
+        return $this;
     }
 
-    //Путь до основного файла с шаблоном сайта
+    private function getRoot(): string
+    {
+        // ✅ ЖЕСТКО ПРОПИСЫВАЕМ ПУТЬ (как мы делали сегодня)
+        return $_SERVER['DOCUMENT_ROOT'] . '/up_1-master/views';
+    }
+
     private function getPathToMain(): string
     {
         return $this->root . $this->layout;
     }
 
-    //Путь до текущего шаблона
     private function getPathToView(string $view = ''): string
     {
         $view = str_replace('.', '/', $view);
@@ -43,21 +45,37 @@ class View
 
     public function render(string $view = '', array $data = []): string
     {
+        $view = $view ?: $this->view;
+        $data = $data ?: $this->data;
+
         $path = $this->getPathToView($view);
+        $main = $this->getPathToMain();
 
-        if (file_exists($this->getPathToMain()) && file_exists($path)) {
+//        // === ДОБАВЬТЕ ЭТОТ БЛОК ДЛЯ ОТЛАДКИ ===
+//        echo "<pre style='background: #fee; padding: 20px; border: 1px solid #fcc;'>";
+//        echo "View name: $view\n";
+//        echo "Root path: {$this->root}\n";
+//        echo "Path to view: $path\n";
+//        echo "Path to main: $main\n";
+//        echo "View exists: " . (file_exists($path) ? 'YES ✅' : 'NO ❌') . "\n";
+//        echo "Main exists: " . (file_exists($main) ? 'YES ✅' : 'NO ❌') . "\n";
+//        echo "useLayout: " . ($this->useLayout ? 'true' : 'false') . "\n";
+//        echo "</pre>";
+//        // =======================================
 
-            //Импортирует переменные из массива в текущую таблицу символов
+        if (file_exists($path)) {
             extract($data, EXTR_PREFIX_SAME, '');
-
-            //Включение буферизации вывода
             ob_start();
             require $path;
-            //Помещаем буфер в переменную и очищаем его
             $content = ob_get_clean();
 
-            //Возвращаем собранную страницу
-            return require($this->getPathToMain());
+            if (!$this->useLayout) {
+                return $content;
+            }
+
+            if (file_exists($main)) {
+                return require($main);
+            }
         }
         throw new Exception('Error render');
     }
@@ -66,5 +84,4 @@ class View
     {
         return $this->render($this->view, $this->data);
     }
-
 }

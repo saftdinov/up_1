@@ -1,11 +1,34 @@
 <?php
+
 return [
-    //Класс аутентификации
+    // Класс аутентификации
     'auth' => \Src\Auth\Auth::class,
-    //Клас пользователя
+
+    // Класс пользователя
     'identity' => \Model\User::class,
-    //Классы для middleware
+
+    // ✅ Глобальные middleware (работают на всех маршрутах)
+    'routeAppMiddleware' => [
+        'trim' => \Middlewares\TrimMiddleware::class,
+        // 'csrf' => \Middlewares\CSRFMiddleware::class,  // Можно добавить позже
+        // 'specialChars' => \Middlewares\SpecialCharsMiddleware::class,
+    ],
+
+    // Middleware для конкретных маршрутов
     'routeMiddleware' => [
         'auth' => \Middlewares\AuthMiddleware::class,
-    ]
+    ],
+
+    // Валидаторы
+    'validators' => [
+        'required' => \Validators\RequireValidator::class,
+    ],
+
+    // Сервис провайдеры
+    'providers' => [
+        'kernel' => \Providers\KernelProvider::class,
+        'route' => \Providers\RouteProvider::class,
+        'db' => \Providers\DBProvider::class,
+        'auth' => \Providers\AuthProvider::class,
+    ],
 ];

@@ -60,7 +60,9 @@ class Route
 
     public function getUrl(string $url): string
     {
-        return $this->prefix . $url;
+        // Если $url уже начинается с /, не добавляем лишний слэш
+        $url = ltrim($url, '/');
+        return '/' . ltrim($this->prefix, '/') . '/' . $url;
     }
 
     //Добавление middlewares для текущего маршрута

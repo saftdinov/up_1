@@ -1,74 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="/public/css/main.css">
-</head>
-<body>
-
-
-<header>
-    <div class="logo">
-        <h2> Учет научной деятельности </h2>
+<section class="stats">
+    <div class="stat-card">
+        <span class="stat-value"><?= $countStudents ?? 0 ?></span>
+        <span class="stat-label">АСПИРАНТОВ</span>
     </div>
-    <div class="account">
-        <h3>Сотрудник научного отдела</h3>
-        <button><a href="<?= app()->route->getUrl('/logout') ?>">Выход </a></button>
+    <div class="stat-card">
+        <span class="stat-value"><?= $countPublications ?? 0 ?></span>
+        <span class="stat-label">ПУБЛИКАЦИЙ</span>
     </div>
-
-</header>
-
-<nav>
-    <div class="nav-block">
-        <div class="main-block">
-            <button><a href="<?= app()->route->getUrl('/hello') ?>">Главная</a></button>
-        </div>
-        <div class="students-block">
-            <button> Аспиранты</button>
-        </div>
-        <div class="publication-block">
-            <button> Публикации</button>
-        </div>
-        <div class="dissertations-block">
-            <button> диссертации </button>
-        </div>
-        <div class="reports-block">
-            <button> Отчёты</button>
-        </div>
+    <div class="stat-card">
+        <span class="stat-value"><?= $countDefenses ?? 0 ?></span>
+        <span class="stat-label">ЗАЩИТ В ЭТОМ ГОДУ</span>
     </div>
-</nav>
-
-<div class="main-back">
-    <div class="information">
-        <div class="information-cart-students">
-            <h2>Аспирантов</h2>
-        </div>
-        <div class="information-cart-publication">
-            <h2>Публикаций</h2>
-        </div>
-        <div class="information-cart-protection">
-            <h2>Защит в этом году</h2>
-        </div>
-        <div class="information-cart-supervisors">
-            <h2>Научных руководителей</h2>
-        </div>
+    <div class="stat-card">
+        <span class="stat-value"><?= $countSupervisors ?? 0 ?></span>
+        <span class="stat-label">НАУЧНЫХ РУКОВОДИТЕЛЕЙ</span>
     </div>
+</section>
 
-
-    <div class="Quick-actions">
-        <h2>Быстрые действия</h2><br>
-        <div class="new-students">
-            <button>Добавить аспиранта</button>
-        </div>
-        <div class="new-publication">
-            <button>Добавить публикацию</button>
-        </div>
-        <div class="Generate-a-report">
-            <button>Сформировать отчет</button>
-        </div>
-
+<section class="actions">
+    <h2 class="section-title">Быстрые действия</h2>
+    <div class="actions-grid">
+        <a href="/up_1-master/public/students/create" class="action-btn">
+            <span class="action-icon">+</span>
+            <span>Добавить аспиранта</span>
+        </a>
+        <a href="#" class="action-btn">
+            <span class="action-icon">📄</span>
+            <span>Добавить публикацию</span>
+        </a>
+        <a href="#" class="action-btn">
+            <span class="action-icon">📊</span>
+            <span>Сформировать отчет</span>
+        </a>
     </div>
-</div>
-</body>
-</html>
+</section>

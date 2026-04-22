@@ -28,11 +28,11 @@ class Settings
 
     public function getRootPath(): string
     {
-        return $this->path['root'] ? '/' . $this->path['root'] : '';
+        return '/up_1-master/public';
     }
 
     public function getViewsPath(): string
     {
-        return '/' . $this->path['views'] ?? '';
+        return '/' . ($this->path['views'] ?? '');
     }
 }
